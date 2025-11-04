@@ -1,0 +1,38 @@
+# Dependencies
+node_modules/
+
+# Environment
+.env
+.env.local
+
+# Next.js
+.next/
+out/
+
+# data files
+manual/*.pdf
+data/vector_store.json
+
+# ChromaDB data
+chroma_data/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Build
+*.tsbuildinfo
+
+# Transformers cache (embedding models)
+.cache/
+transformers-cache/

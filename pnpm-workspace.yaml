@@ -1,0 +1,7 @@
+ignoredBuiltDependencies:
+  - canvas
+  - esbuild
+  - onnxruntime-node
+  - protobufjs
+  - sharp
+  - unrs-resolver
