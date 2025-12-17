@@ -10,9 +10,9 @@
 import { getEmbedder, generateEmbedding } from "./embeddings";
 import { getVectorStore, queryVectorStore } from "./vectorStore";
 import {
-  generateChatCompletion,
-  generateStreamingChatCompletion,
+  generateChatCompletionWithTools,
   estimateTokens,
+  ClaudeTool,
 } from "./claude";
 
 // Configuration
@@ -45,10 +45,10 @@ interface RAGResponse {
 }
 
 /**
- * Build system prompt for the LLM
+ * Build system prompt for the LLM with tool support
  */
-function buildSystemPrompt(): string {
-  return `You are an expert assistant for the FIRST Tech Challenge (FTC) Decode Competition. Your role is to help teams understand the game manual by answering questions accurately and concisely.
+function buildSystemPrompt(withTools: boolean = false): string {
+  const basePrompt = `You are an expert assistant for the FIRST Tech Challenge (FTC) Decode Competition. Your role is to help teams understand the game manual by answering questions accurately and concisely.
 
 Guidelines:
 - Answer based ONLY on the provided context from the official manual
@@ -79,6 +79,27 @@ Example formatting:
 **Important**: Size is measured at the start configuration only."
 
 Remember: Teams rely on accurate information for competition, so precision is critical.`;
+
+  if (withTools) {
+    return (
+      basePrompt +
+      `\n\n**Important Tool Usage:**
+When you encounter references to sections, rules, or topics that are NOT in your provided context (e.g., "see section 10.5.2" or "refer to rule R205"), you MUST use the 'search_manual' tool to retrieve that information before answering.
+
+Steps to follow when you see a reference to missing information:
+1. Identify the specific section, rule, or topic being referenced
+2. Use the search_manual tool with a clear query (e.g., "section 10.5.2" or "rule R205")
+3. Wait for the tool results to be provided
+4. Incorporate the retrieved information into your answer
+5. Cite the section/rule properly in your response
+
+Example: If you see "Teams should follow the scoring guidelines in section 10.5.2" but section 10.5.2 is not in your context, use search_manual with query "section 10.5.2 scoring guidelines" to retrieve it.
+
+**Do NOT** simply state "I don't have information about section X" if you haven't tried using the search_manual tool first.`
+    );
+  }
+
+  return basePrompt;
 }
 
 /**
@@ -172,6 +193,82 @@ function extractSources(chunks: RetrievedChunk[]): RAGResponse["sources"] {
     .sort((a, b) => b.score - a.score);
 }
 
+/**
+ * Search for additional context in the manual
+ * This is exposed as a tool that the LLM can call
+ */
+async function searchManualForContext(
+  query: string,
+  topK: number = 5
+): Promise<string> {
+  console.log(`   🔍 Tool search: "${query}" (topK: ${topK})`);
+
+  // Generate embedding for the search query
+  const queryEmbedding = await generateEmbedding(query);
+
+  // Search vector store
+  const results = await queryVectorStore(queryEmbedding, topK);
+
+  if (results.documents.length === 0) {
+    return `No information found for query: "${query}". The topic may not be covered in the available manual sections.`;
+  }
+
+  // Format results
+  const retrievedChunks: RetrievedChunk[] = results.documents.map(
+    (doc, idx) => ({
+      text: doc,
+      score: results.scores[idx],
+      metadata: results.metadatas[idx] || {},
+    })
+  );
+
+  // Filter by minimum similarity
+  const filtered = retrievedChunks.filter(
+    (chunk) => chunk.score >= MIN_SIMILARITY_SCORE
+  );
+
+  if (filtered.length === 0) {
+    return `No highly relevant information found for query: "${query}". The similarity scores were too low.`;
+  }
+
+  // Format the context
+  const contextText = filtered
+    .map((ctx, idx) => {
+      const source = ctx.metadata.source || "Unknown";
+      const page = ctx.metadata.page || "?";
+      return `[Result ${
+        idx + 1
+      } - ${source}, Page ${page}, Relevance: ${ctx.score.toFixed(2)}]\n${
+        ctx.text
+      }`;
+    })
+    .join("\n\n---\n\n");
+
+  console.log(`   ✅ Tool search returned ${filtered.length} results`);
+
+  return `Additional context retrieved for "${query}":\n\n${contextText}`;
+}
+
+/**
+ * Define the search tool for Claude
+ */
+const searchManualTool: ClaudeTool = {
+  name: "search_manual",
+  description:
+    "Search the FTC DECODE Competition Manual for specific information. Use this when you encounter references to sections, rules, or topics that are not in your current context. Provide a clear, specific query describing what information you need (e.g., 'section 10.5.2', 'rule R205', 'autonomous scoring requirements').",
+  input_schema: {
+    type: "object",
+    properties: {
+      query: {
+        type: "string",
+        description:
+          "The search query. Be specific and include section numbers, rule numbers, or key terms from the reference you're trying to find.",
+      },
+    },
+    required: ["query"],
+  },
+};
+
 interface ConversationMessage {
   role: "user" | "assistant";
   content: string;
@@ -253,7 +350,7 @@ export async function answerQuestion(
   console.log(`📝 Using ${selectedChunks.length} chunks as context`);
 
   // Step 5: Build prompts
-  const systemPrompt = buildSystemPrompt();
+  const systemPrompt = buildSystemPrompt(true); // Enable tool support
   const userPrompt = buildUserPrompt(question, selectedChunks);
 
   const totalTokensEstimate =
@@ -274,19 +371,58 @@ export async function answerQuestion(
   // Add current question with context
   messages.push({ role: "user", content: userPrompt });
 
-  // Step 7: Generate answer with LLM
-  console.log("🤖 Generating answer with Claude...");
-  const answer = await generateChatCompletion(messages);
+  // Step 7: Generate answer with LLM using tool support
+  console.log("🤖 Generating answer with Claude (with tool support)...");
+
+  // Track all chunks used (initial + tool searches)
+  const allChunksUsed = [...selectedChunks];
+
+  // Tool handler for search_manual
+  const toolHandler = async (
+    toolName: string,
+    toolInput: Record<string, unknown>
+  ): Promise<string> => {
+    if (toolName === "search_manual") {
+      const query = toolInput.query as string;
+      const additionalContext = await searchManualForContext(query, 5);
+
+      // Parse the retrieved chunks to add to sources
+      // (This is a simplified version - in production you'd want more robust parsing)
+      const queryEmbedding = await generateEmbedding(query);
+      const results = await queryVectorStore(queryEmbedding, 5);
+
+      if (results.documents.length > 0) {
+        const toolChunks: RetrievedChunk[] = results.documents.map(
+          (doc, idx) => ({
+            text: doc,
+            score: results.scores[idx],
+            metadata: results.metadatas[idx] || {},
+          })
+        );
+        allChunksUsed.push(...toolChunks);
+      }
+
+      return additionalContext;
+    }
+    throw new Error(`Unknown tool: ${toolName}`);
+  };
+
+  const answer = await generateChatCompletionWithTools(
+    messages,
+    [searchManualTool],
+    toolHandler,
+    { maxIterations: 3 }
+  );
 
   console.log(`✅ Answer generated (${answer.length} chars)`);
 
-  // Step 7: Extract sources
-  const sources = extractSources(selectedChunks);
+  // Step 8: Extract sources from all chunks used
+  const sources = extractSources(allChunksUsed);
 
   return {
     answer,
     sources,
-    contextsUsed: selectedChunks.length,
+    contextsUsed: allChunksUsed.length,
     tokensEstimate: totalTokensEstimate,
   };
 }
@@ -390,7 +526,7 @@ export async function answerQuestionStreaming(
   console.log(`📝 Using ${selectedChunks.length} chunks as context`);
 
   // Step 5: Build prompts
-  const systemPrompt = buildSystemPrompt();
+  const systemPrompt = buildSystemPrompt(true); // Enable tool support
   const userPrompt = buildUserPrompt(question, selectedChunks);
 
   const totalTokensEstimate =
@@ -411,17 +547,72 @@ export async function answerQuestionStreaming(
   // Add current question with context
   messages.push({ role: "user", content: userPrompt });
 
-  // Step 7: Start streaming
-  console.log("🤖 Starting streaming response from Claude...");
-  const stream = await generateStreamingChatCompletion(messages);
+  // Step 7: Use tool-based approach (non-streaming during tool calls, then stream final response)
+  console.log(
+    "🤖 Generating answer with Claude (with tool support, streaming final response)..."
+  );
 
-  // Step 7: Extract sources
-  const sources = extractSources(selectedChunks);
+  // Track all chunks used
+  const allChunksUsed = [...selectedChunks];
+
+  // Tool handler for search_manual
+  const toolHandler = async (
+    toolName: string,
+    toolInput: Record<string, unknown>
+  ): Promise<string> => {
+    if (toolName === "search_manual") {
+      const query = toolInput.query as string;
+      const additionalContext = await searchManualForContext(query, 5);
+
+      // Parse the retrieved chunks to add to sources
+      const queryEmbedding = await generateEmbedding(query);
+      const results = await queryVectorStore(queryEmbedding, 5);
+
+      if (results.documents.length > 0) {
+        const toolChunks: RetrievedChunk[] = results.documents.map(
+          (doc, idx) => ({
+            text: doc,
+            score: results.scores[idx],
+            metadata: results.metadatas[idx] || {},
+          })
+        );
+        allChunksUsed.push(...toolChunks);
+      }
+
+      return additionalContext;
+    }
+    throw new Error(`Unknown tool: ${toolName}`);
+  };
+
+  // Get the complete answer (with tool calls handled)
+  const answer = await generateChatCompletionWithTools(
+    messages,
+    [searchManualTool],
+    toolHandler,
+    { maxIterations: 3 }
+  );
+
+  // Create a simple stream that yields the complete answer
+  async function* answerStream() {
+    // Yield answer in chunks for a smoother streaming experience
+    const chunkSize = 50; // characters per chunk
+    for (let i = 0; i < answer.length; i += chunkSize) {
+      yield {
+        type: "content_block_delta" as const,
+        delta: { text: answer.slice(i, i + chunkSize) },
+      };
+    }
+  }
+
+  console.log(`✅ Answer generated (${answer.length} chars)`);
+
+  // Step 8: Extract sources from all chunks used
+  const sources = extractSources(allChunksUsed);
 
   return {
-    stream,
+    stream: answerStream(),
     sources,
-    contextsUsed: selectedChunks.length,
+    contextsUsed: allChunksUsed.length,
     tokensEstimate: totalTokensEstimate,
   };
 }
