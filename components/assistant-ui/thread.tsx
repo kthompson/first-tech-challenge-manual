@@ -271,8 +271,15 @@ const SourceCitations: FC = () => {
             key={idx}
             className="ml-2 p-2 rounded-lg bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 text-blue-800 dark:text-blue-200"
           >
-            <span className="font-medium">{source.source}</span> · Page{" "}
-            {source.page} · {Math.round(source.score * 100)}% match
+            <a
+              href={`https://ftc-resources.firstinspires.org/ftc/game/manual#page=${source.page}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-medium hover:underline"
+            >
+              {source.source}
+            </a>{" "}
+            · Page {source.page} · {Math.round(source.score * 100)}% match
           </div>
         ))}
       </div>
