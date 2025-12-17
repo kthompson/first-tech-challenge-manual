@@ -1,3 +1,5 @@
+"use server";
+
 /**
  * RAG (Retrieval Augmented Generation) Service
  *
@@ -109,10 +111,10 @@ Please provide a clear, accurate answer based on the context above. If you refer
 /**
  * Filter and rank retrieved chunks
  */
-function filterAndRankChunks(
+async function filterAndRankChunks(
   chunks: RetrievedChunk[],
   maxTokens: number
-): RetrievedChunk[] {
+): Promise<RetrievedChunk[]> {
   // Filter by minimum similarity score
   const filtered = chunks.filter(
     (chunk) => chunk.score >= MIN_SIMILARITY_SCORE
@@ -130,7 +132,7 @@ function filterAndRankChunks(
   let totalTokens = 0;
 
   for (const chunk of sorted) {
-    const chunkTokens = estimateTokens(chunk.text);
+    const chunkTokens = await estimateTokens(chunk.text);
     if (totalTokens + chunkTokens <= maxTokens) {
       selected.push(chunk);
       totalTokens += chunkTokens;
@@ -230,7 +232,7 @@ export async function answerQuestion(
   );
 
   // Step 4: Filter and rank chunks
-  const selectedChunks = filterAndRankChunks(
+  const selectedChunks = await filterAndRankChunks(
     retrievedChunks,
     MAX_CONTEXT_TOKENS
   );
@@ -255,7 +257,7 @@ export async function answerQuestion(
   const userPrompt = buildUserPrompt(question, selectedChunks);
 
   const totalTokensEstimate =
-    estimateTokens(systemPrompt) + estimateTokens(userPrompt);
+    (await estimateTokens(systemPrompt)) + (await estimateTokens(userPrompt));
   console.log(`💭 Estimated context tokens: ${totalTokensEstimate}`);
 
   // Step 6: Build messages array with conversation history
@@ -357,7 +359,7 @@ export async function answerQuestionStreaming(
   );
 
   // Step 4: Filter and rank chunks
-  const selectedChunks = filterAndRankChunks(
+  const selectedChunks = await filterAndRankChunks(
     retrievedChunks,
     MAX_CONTEXT_TOKENS
   );
@@ -392,7 +394,7 @@ export async function answerQuestionStreaming(
   const userPrompt = buildUserPrompt(question, selectedChunks);
 
   const totalTokensEstimate =
-    estimateTokens(systemPrompt) + estimateTokens(userPrompt);
+    (await estimateTokens(systemPrompt)) + (await estimateTokens(userPrompt));
   console.log(`💭 Estimated context tokens: ${totalTokensEstimate}`);
 
   // Step 6: Build messages array with conversation history
@@ -427,7 +429,7 @@ export async function answerQuestionStreaming(
 /**
  * Get RAG configuration
  */
-export function getRAGConfig() {
+export async function getRAGConfig() {
   return {
     topK: TOP_K_RESULTS,
     minSimilarityScore: MIN_SIMILARITY_SCORE,

@@ -1,3 +1,5 @@
+"use server";
+
 /**
  * Claude Service
  *
@@ -20,7 +22,7 @@ let claudeClient: Anthropic | null = null;
 /**
  * Get Claude client instance
  */
-export function getClaudeClient(): Anthropic {
+export async function getClaudeClient(): Promise<Anthropic> {
   if (!ANTHROPIC_API_KEY) {
     throw new Error(
       "ANTHROPIC_API_KEY not found in environment variables. Please add it to your .env file."
@@ -46,7 +48,7 @@ export async function generateChatCompletion(
     maxTokens?: number;
   }
 ): Promise<string> {
-  const client = getClaudeClient();
+  const client = await getClaudeClient();
 
   // Extract system message
   const systemMessage = messages.find((m) => m.role === "system");
@@ -96,7 +98,7 @@ export async function* generateStreamingChatCompletion(
     maxTokens?: number;
   }
 ): AsyncGenerator<{ type: string; delta?: { text?: string } }> {
-  const client = getClaudeClient();
+  const client = await getClaudeClient();
 
   // Extract system message
   const systemMessage = messages.find((m) => m.role === "system");
@@ -135,7 +137,7 @@ export async function* generateStreamingChatCompletion(
  * Estimate token count (rough approximation)
  * More accurate would use Claude's tokenizer, but this is good enough for PoC
  */
-export function estimateTokens(text: string): number {
+export async function estimateTokens(text: string): Promise<number> {
   // Rough estimate: 1 token ≈ 4 characters in English
   return Math.ceil(text.length / 4);
 }
@@ -143,7 +145,7 @@ export function estimateTokens(text: string): number {
 /**
  * Get model info
  */
-export function getModelInfo() {
+export async function getModelInfo() {
   return {
     model: MODEL,
     maxTokens: MAX_TOKENS,

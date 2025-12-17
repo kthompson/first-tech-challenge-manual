@@ -1,3 +1,5 @@
+"use server";
+
 /**
  * Vector Store Service
  *
