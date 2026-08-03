@@ -94,9 +94,9 @@ const ThreadWelcome: FC = () => {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 10 }}
-            className="aui-thread-welcome-message-motion-1 text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent mb-3"
+            className="aui-thread-welcome-message-motion-1 text-3xl md:text-4xl font-bold bg-gradient-to-r from-emerald-600 via-green-600 to-amber-500 bg-clip-text text-transparent mb-3"
           >
-            Welcome to the DECODE Manual Assistant!
+            Welcome to the BIOBUZZ Manual Assistant!
           </m.div>
           <m.div
             initial={{ opacity: 0, y: 10 }}
@@ -105,7 +105,7 @@ const ThreadWelcome: FC = () => {
             transition={{ delay: 0.1 }}
             className="aui-thread-welcome-message-motion-2 text-lg md:text-xl text-gray-600 dark:text-gray-400"
           >
-            Ask me anything about the FTC DECODE Competition Manual.
+            Ask me anything about the FTC BIOBUZZ Competition Manual.
           </m.div>
           <m.div
             initial={{ opacity: 0, scale: 0.95 }}
@@ -114,7 +114,7 @@ const ThreadWelcome: FC = () => {
             transition={{ delay: 0.2 }}
             className="mt-6 text-6xl"
           >
-            🏆
+            🐝
           </m.div>
         </div>
       </div>
@@ -128,14 +128,14 @@ const ThreadSuggestions: FC = () => {
     <div className="aui-thread-welcome-suggestions grid w-full gap-2 pb-4 @md:grid-cols-2">
       {[
         {
-          title: "What are the game objectives",
-          label: "in the competition?",
-          action: "What are the game objectives in the competition?",
+          title: "What is the Competition",
+          label: "Integrity Contract (CIC)?",
+          action: "What is the Competition Integrity Contract (CIC)?",
         },
         {
-          title: "What are the scoring rules",
-          label: "for DECODE?",
-          action: "What are the scoring rules for DECODE?",
+          title: "What changed in the robot",
+          label: "construction rules for BIOBUZZ?",
+          action: "What changed in the robot construction rules for BIOBUZZ?",
         },
         {
           title: "What are the robot size",
@@ -163,13 +163,13 @@ const ThreadSuggestions: FC = () => {
           >
             <Button
               variant="ghost"
-              className="aui-thread-welcome-suggestion h-auto w-full flex-1 flex-wrap items-start justify-start gap-1 rounded-2xl border-2 border-blue-200 dark:border-blue-800 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/50 dark:to-indigo-950/50 px-5 py-4 text-left text-sm @md:flex-col hover:border-blue-400 hover:shadow-lg hover:scale-[1.02] transition-all duration-200"
+              className="aui-thread-welcome-suggestion h-auto w-full flex-1 flex-wrap items-start justify-start gap-1 rounded-2xl border-2 border-emerald-200 dark:border-emerald-800 bg-gradient-to-br from-emerald-50 to-amber-50 dark:from-emerald-950/50 dark:to-amber-950/50 px-5 py-4 text-left text-sm @md:flex-col hover:border-emerald-400 hover:shadow-lg hover:scale-[1.02] transition-all duration-200"
               aria-label={suggestedAction.action}
             >
-              <span className="aui-thread-welcome-suggestion-text-1 font-semibold text-blue-900 dark:text-blue-100">
+              <span className="aui-thread-welcome-suggestion-text-1 font-semibold text-emerald-900 dark:text-emerald-100">
                 {suggestedAction.title}
               </span>
-              <span className="aui-thread-welcome-suggestion-text-2 text-blue-700 dark:text-blue-300">
+              <span className="aui-thread-welcome-suggestion-text-2 text-emerald-700 dark:text-emerald-300">
                 {suggestedAction.label}
               </span>
             </Button>
@@ -184,10 +184,10 @@ const Composer: FC = () => {
   return (
     <div className="aui-composer-wrapper sticky bottom-0 mx-auto flex w-full max-w-[var(--thread-max-width)] flex-col gap-4 overflow-visible pb-4 md:pb-6 px-4">
       <ThreadScrollToBottom />
-      <ComposerPrimitive.Root className="aui-composer-root relative flex w-full flex-col rounded-2xl border-2 border-blue-200 dark:border-blue-800 bg-white dark:bg-gray-800 px-1 pt-2 shadow-xl">
+      <ComposerPrimitive.Root className="aui-composer-root relative flex w-full flex-col rounded-2xl border-2 border-emerald-200 dark:border-emerald-800 bg-white dark:bg-gray-800 px-1 pt-2 shadow-xl">
         <ComposerAttachments />
         <ComposerPrimitive.Input
-          placeholder="Ask about the FTC DECODE manual..."
+          placeholder="Ask about the FTC BIOBUZZ manual..."
           className="aui-composer-input mb-1 max-h-32 min-h-16 w-full resize-none bg-transparent px-4 pt-2 pb-3 text-base outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none text-gray-900 dark:text-gray-100"
           rows={1}
           autoFocus
@@ -212,7 +212,7 @@ const ComposerAction: FC = () => {
             type="submit"
             variant="default"
             size="icon"
-            className="aui-composer-send size-[38px] rounded-full p-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg hover:shadow-xl transition-all"
+            className="aui-composer-send size-[38px] rounded-full p-1 bg-gradient-to-r from-emerald-600 to-amber-600 hover:from-emerald-700 hover:to-amber-700 shadow-lg hover:shadow-xl transition-all"
             aria-label="Send message"
           >
             <ArrowUpIcon className="aui-composer-send-icon size-5" />
@@ -261,15 +261,15 @@ const SourceCitations: FC = () => {
   if (sources.length === 0) return null;
 
   return (
-    <div className="mt-4 pt-3 border-t border-blue-200 dark:border-blue-800">
+    <div className="mt-4 pt-3 border-t border-emerald-200 dark:border-emerald-800">
       <div className="text-xs space-y-2">
-        <div className="font-semibold text-blue-900 dark:text-blue-100 flex items-center gap-2">
+        <div className="font-semibold text-emerald-900 dark:text-emerald-100 flex items-center gap-2">
           <span className="text-base">📚</span> Sources from Manual:
         </div>
         {sources.map((source, idx) => (
           <div
             key={idx}
-            className="ml-2 p-2 rounded-lg bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 text-blue-800 dark:text-blue-200"
+            className="ml-2 p-2 rounded-lg bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-200"
           >
             <a
               href={`https://ftc-resources.firstinspires.org/ftc/game/manual#page=${source.page}`}
@@ -351,7 +351,7 @@ const UserMessage: FC = () => {
         <UserMessageAttachments />
 
         <div className="aui-user-message-content-wrapper relative col-start-2 min-w-0">
-          <div className="aui-user-message-content rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 px-5 py-3 break-words text-white shadow-lg">
+          <div className="aui-user-message-content rounded-2xl bg-gradient-to-br from-emerald-600 to-amber-600 px-5 py-3 break-words text-white shadow-lg">
             <MessagePrimitive.Parts />
           </div>
           <div className="aui-user-action-bar-wrapper absolute top-1/2 left-0 -translate-x-full -translate-y-1/2 pr-2">

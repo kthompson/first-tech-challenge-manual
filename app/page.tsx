@@ -3,11 +3,11 @@
 import { AssistantRuntimeProvider } from "@assistant-ui/react";
 import { Thread } from "@/components/assistant-ui/thread";
 import { ThreadList } from "@/components/assistant-ui/thread-list";
-import { useDecodeRuntime } from "@/lib/useDecodeRuntime";
+import { useBiobuzzRuntime } from "@/lib/useBiobuzzRuntime";
 import { useResponsiveSidebar } from "@/lib/useResponsiveSidebar";
 
 export default function Home() {
-  const { runtime, threadManager } = useDecodeRuntime();
+  const { runtime, threadManager } = useBiobuzzRuntime();
   const { showSidebar, setShowSidebar, isMobile } = useResponsiveSidebar();
 
   const handleNewThread = () => {
@@ -16,7 +16,7 @@ export default function Home() {
 
   return (
     <AssistantRuntimeProvider runtime={runtime}>
-      <div className="flex h-screen bg-linear-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-blue-950 dark:to-indigo-950">
+      <div className="flex h-screen bg-linear-to-br from-emerald-50 via-green-50 to-amber-50 dark:from-gray-900 dark:via-emerald-950 dark:to-green-950">
         {/* Mobile Overlay */}
         {showSidebar && isMobile && (
           <div
@@ -98,20 +98,20 @@ export default function Home() {
                     />
                   </svg>
                 </button>
-                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-linear-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
-                  <span className="text-xl sm:text-2xl">🤖</span>
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-linear-to-br from-emerald-600 to-amber-500 rounded-xl flex items-center justify-center shadow-lg">
+                  <span className="text-xl sm:text-2xl">🐝</span>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h1 className="text-base sm:text-xl font-bold bg-linear-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent truncate">
-                    FTC DECODE Assistant
+                  <h1 className="text-base sm:text-xl font-bold bg-linear-to-r from-emerald-600 to-amber-500 bg-clip-text text-transparent truncate">
+                    FTC BIOBUZZ Assistant
                   </h1>
                   <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 truncate">
                     Competition Manual Expert
                   </p>
                 </div>
-                <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-blue-100 dark:bg-blue-900/30 rounded-full">
-                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                  <span className="text-xs font-medium text-blue-700 dark:text-blue-300">
+                <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-emerald-100 dark:bg-emerald-900/30 rounded-full">
+                  <div className="w-2 h-2 bg-amber-500 rounded-full animate-pulse"></div>
+                  <span className="text-xs font-medium text-emerald-700 dark:text-emerald-300">
                     Online
                   </span>
                 </div>

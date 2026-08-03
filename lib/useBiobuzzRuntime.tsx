@@ -6,13 +6,13 @@ import {
   AppendMessage,
 } from "@assistant-ui/react";
 import { useState } from "react";
-import { useThreadManager, type DecodeMessage } from "./useThreadManager";
+import { useThreadManager, type BiobuzzMessage } from "./useThreadManager";
 
 // Use relative API URL since the API is now part of the Next.js app
 const API_URL = "";
 
-// Convert DecodeMessage to ThreadMessageLike
-const convertMessage = (message: DecodeMessage): ThreadMessageLike => {
+// Convert BiobuzzMessage to ThreadMessageLike
+const convertMessage = (message: BiobuzzMessage): ThreadMessageLike => {
   const baseMessage: ThreadMessageLike = {
     role: message.role,
     content: [{ type: "text", text: message.content }],
@@ -35,7 +35,7 @@ const convertMessage = (message: DecodeMessage): ThreadMessageLike => {
   return baseMessage;
 };
 
-export function useDecodeRuntime() {
+export function useBiobuzzRuntime() {
   const threadManager = useThreadManager();
   const { messages, updateMessages, currentThreadId, createThread } =
     threadManager;
@@ -52,7 +52,7 @@ export function useDecodeRuntime() {
     // Create an assistant message that will be updated as we stream
     const assistantId = `assistant-${Date.now()}`;
     let assistantContent = "";
-    let sources: DecodeMessage["sources"] = [];
+    let sources: BiobuzzMessage["sources"] = [];
 
     try {
       // Build conversation history (exclude the current message which was just added)
@@ -107,13 +107,13 @@ export function useDecodeRuntime() {
               // Append content and update message
               assistantContent += data.content;
 
-              updateMessages((prev: DecodeMessage[]) => {
+              updateMessages((prev: BiobuzzMessage[]) => {
                 const existing = prev.find(
-                  (m: DecodeMessage) => m.id === assistantId
+                  (m: BiobuzzMessage) => m.id === assistantId
                 );
                 if (existing) {
                   // Update existing message
-                  return prev.map((m: DecodeMessage) =>
+                  return prev.map((m: BiobuzzMessage) =>
                     m.id === assistantId
                       ? { ...m, content: assistantContent, sources }
                       : m
@@ -144,7 +144,7 @@ export function useDecodeRuntime() {
       console.error("Error calling API:", error);
 
       // Add error message
-      const errorMessage: DecodeMessage = {
+      const errorMessage: BiobuzzMessage = {
         role: "assistant",
         content: `Sorry, I encountered an error: ${
           error instanceof Error ? error.message : "Unknown error"
@@ -152,7 +152,7 @@ export function useDecodeRuntime() {
         id: `error-${Date.now()}`,
         createdAt: new Date(),
       };
-      updateMessages((prev: DecodeMessage[]) => [...prev, errorMessage]);
+      updateMessages((prev: BiobuzzMessage[]) => [...prev, errorMessage]);
     } finally {
       setIsRunning(false);
     }
@@ -167,13 +167,13 @@ export function useDecodeRuntime() {
     const userText = message.content[0].text;
 
     // Add user message
-    const userMessage: DecodeMessage = {
+    const userMessage: BiobuzzMessage = {
       role: "user",
       content: userText,
       id: `user-${Date.now()}`,
       createdAt: new Date(),
     };
-    updateMessages((prev: DecodeMessage[]) => [...prev, userMessage]);
+    updateMessages((prev: BiobuzzMessage[]) => [...prev, userMessage]);
 
     // Call the sendMessage function to get the assistant response
     await sendMessage(userText);
@@ -182,12 +182,12 @@ export function useDecodeRuntime() {
   const onReload = async (parentId: string | null) => {
     // Find the message to reload (the last user message before the assistant response we're reloading)
     const messageIndex = messages.findIndex(
-      (m: DecodeMessage) => m.id === parentId
+      (m: BiobuzzMessage) => m.id === parentId
     );
     if (messageIndex === -1) return;
 
     // Find the user message that prompted this assistant response
-    let userMessage: DecodeMessage | undefined;
+    let userMessage: BiobuzzMessage | undefined;
     for (let i = messageIndex - 1; i >= 0; i--) {
       if (messages[i]?.role === "user") {
         userMessage = messages[i];
@@ -201,13 +201,13 @@ export function useDecodeRuntime() {
     }
 
     // Remove all messages after and including the message being reloaded
-    updateMessages((prev: DecodeMessage[]) => prev.slice(0, messageIndex));
+    updateMessages((prev: BiobuzzMessage[]) => prev.slice(0, messageIndex));
 
     // Re-send the user's message to get a new response
     await sendMessage(userMessage.content);
   };
 
-  const runtime = useExternalStoreRuntime<DecodeMessage>({
+  const runtime = useExternalStoreRuntime<BiobuzzMessage>({
     messages,
     setMessages: (newMessages) => updateMessages([...newMessages]),
     isRunning,

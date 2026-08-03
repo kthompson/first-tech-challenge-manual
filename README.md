@@ -1,6 +1,6 @@
-# FTC Decode Manual Chatbot (Proof of Concept)
+# FTC BIOBUZZ Manual Chatbot (Proof of Concept)
 
-A conversational AI assistant that helps teams quickly find information from the FIRST Tech Challenge (FTC) Decode Challenge manual.
+A conversational AI assistant that helps teams quickly find information from the FIRST Tech Challenge (FTC) BIOBUZZ Challenge manual.
 
 ## Current Status: Complete! ✅
 
@@ -17,7 +17,7 @@ A conversational AI assistant that helps teams quickly find information from the
 
 ## What is This?
 
-This project provides an intelligent chatbot interface to query the FTC Decode Competition Manual. The bot can answer questions about rules, regulations, game mechanics, scoring, and other competition details.
+This project provides an intelligent chatbot interface to query the FTC BIOBUZZ Competition Manual. The bot can answer questions about rules, regulations, game mechanics, scoring, and other competition details.
 
 ## PoC Goals & Achievements
 
@@ -94,7 +94,7 @@ This project provides an intelligent chatbot interface to query the FTC Decode C
 ├── lib/                        # Services and utilities
 │   ├── services/               # RAG, Claude, embeddings, vector store
 │   ├── utils/                  # PDF processor, helpers
-│   └── useDecodeRuntime.tsx    # Chat runtime hook
+│   └── useBiobuzzRuntime.tsx   # Chat runtime hook
 ├── scripts/                    # Data processing scripts
 │   ├── process-manual.ts       # Process PDFs into vector store
 │   ├── test-retrieval.ts       # Test vector search
@@ -191,10 +191,10 @@ All commands run from the project root.
 
 ### Handling Manual Updates
 
-The FTC Decode manual receives regular updates throughout the season. To add new manual versions:
+The FTC BIOBUZZ manual receives regular updates throughout the season. To add new manual versions:
 
 1. **Download** the updated PDF from the FIRST website
-2. **Place** it in the `manual/` folder (e.g., `DECODE_Competition_Manual_TU2.pdf`)
+2. **Place** it in the `manual/` folder (e.g., `BIOBUZZ_Competition_Manual_TU1.pdf`)
 3. **Reprocess** the vector database:
 
    ```bash

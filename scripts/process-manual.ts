@@ -2,7 +2,7 @@
  * PDF Manual Processing Script
  *
  * This script:
- * 1. Downloads the latest FTC Decode manual PDF from FIRST website
+ * 1. Downloads the latest FTC BIOBUZZ manual PDF from FIRST website
  * 2. Extracts text with page numbers
  * 3. Chunks content into manageable segments
  * 4. Generates embeddings using LOCAL model (FREE!)
@@ -322,7 +322,7 @@ async function storeInVectorDB(
  * Main processing function
  */
 async function main() {
-  console.log("🚀 FTC Decode Manual Processing Started");
+  console.log("🚀 FTC BIOBUZZ Manual Processing Started");
   console.log("========================================\n");
 
   const startTime = Date.now();

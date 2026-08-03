@@ -4,7 +4,7 @@
 
 # API Documentation
 
-The FTC Decode Manual Chatbot API provides endpoints for querying the competition manual. This documentation covers the **Proof of Concept** implementation focused on core functionality.
+The FTC BIOBUZZ Manual Chatbot API provides endpoints for querying the competition manual. This documentation covers the **Proof of Concept** implementation focused on core functionality.
 
 ## PoC Scope
 
@@ -37,7 +37,7 @@ The FTC Decode Manual Chatbot API provides endpoints for querying the competitio
 
 #### POST /api/chat
 
-Send a message to the chatbot and receive a response based on the FTC Decode manual.
+Send a message to the chatbot and receive a response based on the FTC BIOBUZZ manual.
 
 **Request Body**:
 
@@ -51,7 +51,7 @@ Send a message to the chatbot and receive a response based on the FTC Decode man
 
 ```json
 {
-  "response": "According to the FTC Decode manual, robots must fit within...",
+  "response": "According to the FTC BIOBUZZ manual, robots must fit within...",
   "sources": [
     {
       "page": 42,
@@ -102,7 +102,7 @@ Retrieve chat history for a session.
     {
       "id": "msg-124",
       "type": "assistant",
-      "content": "According to the FTC Decode manual...",
+      "content": "According to the FTC BIOBUZZ manual...",
       "sources": [...],
       "timestamp": "2025-09-13T10:30:05Z"
     }
@@ -142,7 +142,7 @@ Get information about the current manual version and processing status.
 ```json
 {
   "manual": {
-    "filename": "DECODE_Competition_Manual_TU1.pdf",
+    "filename": "BIOBUZZ_Competition_Manual_V0.pdf",
     "version": "TU1",
     "lastUpdated": "2025-09-13T08:00:00Z",
     "pages": 156,
@@ -279,7 +279,7 @@ Detailed system status and metrics.
 curl -X POST http://localhost:3000/api/chat \
   -H "Content-Type: application/json" \
   -d '{
-    "message": "How many points is a high goal worth in FTC Decode?"
+    "message": "How many points is a high goal worth in FTC BIOBUZZ?"
   }'
 ```
 
@@ -287,7 +287,7 @@ curl -X POST http://localhost:3000/api/chat \
 
 ```json
 {
-  "response": "In FTC Decode, a high goal is worth 5 points when scored during the teleoperated period and 10 points when scored during the autonomous period.",
+  "response": "In FTC BIOBUZZ, a high goal is worth 5 points when scored during the teleoperated period and 10 points when scored during the autonomous period.",
   "sources": [
     {
       "page": 28,
@@ -386,9 +386,9 @@ X-RateLimit-Reset: 1726222800
 For TypeScript applications, use the generated SDK:
 
 ```typescript
-import { FtcDecodeApi } from "ftc-decode-sdk";
+import { FtcBiobuzzApi } from "ftc-biobuzz-sdk";
 
-const client = new FtcDecodeApi({
+const client = new FtcBiobuzzApi({
   baseUrl: "http://localhost:3000/api",
 });
 
@@ -407,9 +407,9 @@ console.log(response.sources);
 For C# applications:
 
 ```csharp
-using FtcDecodeBot.Client;
+using FtcBiobuzzBot.Client;
 
-var client = new FtcDecodeClient("http://localhost:3000/api");
+var client = new FtcBiobuzzClient("http://localhost:3000/api");
 
 // Send a chat message
 var response = await client.Chat.SendMessageAsync(new ChatRequest

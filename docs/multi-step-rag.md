@@ -108,7 +108,7 @@ Tool definition exposed to Claude:
 ```typescript
 {
   name: "search_manual",
-  description: "Search the FTC DECODE Competition Manual...",
+  description: "Search the FTC BIOBUZZ Competition Manual...",
   input_schema: {
     type: "object",
     properties: {

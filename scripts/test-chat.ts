@@ -57,7 +57,7 @@ async function testQuestion(question: string): Promise<void> {
  * Main test function
  */
 async function main() {
-  console.log("🧪 FTC Decode Chatbot - Chat API Testing");
+  console.log("🧪 FTC BIOBUZZ Chatbot - Chat API Testing");
   console.log("========================================\n");
 
   // Check for API key
