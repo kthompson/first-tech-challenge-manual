@@ -140,7 +140,7 @@ All successful responses follow this format:
   "answer": "The generated answer with context from the manual",
   "sources": [
     {
-      "source": "DECODE_Competition_Manual_TU1.pdf",
+      "source": "BIOBUZZ_Competition_Manual_V0.pdf",
       "page": 105,
       "score": 0.683
     }

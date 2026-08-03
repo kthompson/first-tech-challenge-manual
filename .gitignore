@@ -11,6 +11,7 @@ out/
 
 # data files
 manual/*.pdf
+manual/archive/*.pdf
 data/vector_store.json
 
 # ChromaDB data

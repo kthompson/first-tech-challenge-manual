@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 
-export interface DecodeMessage {
+export interface BiobuzzMessage {
   role: "user" | "assistant";
   content: string;
   sources?: Array<{
@@ -17,13 +17,13 @@ export interface DecodeMessage {
 export interface Thread {
   id: string;
   title: string;
-  messages: DecodeMessage[];
+  messages: BiobuzzMessage[];
   createdAt: Date;
   updatedAt: Date;
 }
 
-const STORAGE_KEY = "ftc-decode-threads";
-const CURRENT_THREAD_KEY = "ftc-decode-current-thread";
+const STORAGE_KEY = "ftc-biobuzz-threads";
+const CURRENT_THREAD_KEY = "ftc-biobuzz-current-thread";
 
 // Helper to generate thread title from first message
 function generateThreadTitle(firstMessage: string): string {
@@ -49,7 +49,7 @@ function loadThreads(): Thread[] {
       ...thread,
       createdAt: new Date(thread.createdAt),
       updatedAt: new Date(thread.updatedAt),
-      messages: thread.messages.map((msg: DecodeMessage) => ({
+      messages: thread.messages.map((msg: BiobuzzMessage) => ({
         ...msg,
         createdAt: new Date(msg.createdAt),
       })),
@@ -163,8 +163,8 @@ export function useThreadManager() {
   const updateMessages = useCallback(
     (
       messagesOrUpdater:
-        | DecodeMessage[]
-        | ((prev: DecodeMessage[]) => DecodeMessage[])
+        | BiobuzzMessage[]
+        | ((prev: BiobuzzMessage[]) => BiobuzzMessage[])
     ) => {
       if (!currentThreadId) return;
 

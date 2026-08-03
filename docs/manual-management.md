@@ -1,6 +1,6 @@
 # Manual Management Guide
 
-This document explains how to manage multiple versions of the FTC Decode Competition Manual in the chatbot system.
+This document explains how to manage multiple versions of the FTC BIOBUZZ Competition Manual in the chatbot system.
 
 ## Manual Folder Structure
 
@@ -8,9 +8,9 @@ All competition manual PDFs are stored in the `manual/` folder at the project ro
 
 ```
 manual/
-├── DECODE_Competition_Manual_TU1.pdf
-├── DECODE_Competition_Manual_TU2.pdf  (future updates)
-└── DECODE_Competition_Manual_TU3.pdf  (future updates)
+├── BIOBUZZ_Competition_Manual_V0.pdf
+├── BIOBUZZ_Competition_Manual_TU1.pdf  (future updates)
+└── BIOBUZZ_Competition_Manual_TU2.pdf  (future updates)
 ```
 
 ## Adding New Manuals
@@ -18,7 +18,7 @@ manual/
 When FIRST releases an updated manual:
 
 1. Download the new PDF from the FIRST website
-2. Place it in the `manual/` folder with a descriptive filename (e.g., `DECODE_Competition_Manual_TU2.pdf`)
+2. Place it in the `manual/` folder with a descriptive filename (e.g., `BIOBUZZ_Competition_Manual_TU1.pdf`)
 3. Run the processing script to rebuild the vector database:
 
 ```bash
@@ -58,7 +58,7 @@ When querying the chatbot, results include the source filename:
 
 ```
 📄 Result 1 (Score: 0.691)
-   Source: DECODE_Competition_Manual_TU1.pdf
+   Source: BIOBUZZ_Competition_Manual_V0.pdf
    Page: 105
    Text: Section 12 ROBOT Construction Rules (R)...
 ```
@@ -102,9 +102,9 @@ Store all manual versions in the `manual/` folder:
 
 ```
 manual/
-├── DECODE_Competition_Manual_TU1.pdf
-├── DECODE_Competition_Manual_TU2.pdf
-└── DECODE_Competition_Manual_TU3.pdf
+├── BIOBUZZ_Competition_Manual_V0.pdf
+├── BIOBUZZ_Competition_Manual_TU1.pdf
+└── BIOBUZZ_Competition_Manual_TU2.pdf
 ```
 
 **Use when:** You want the chatbot to answer from any version, or compare changes across versions.
@@ -117,10 +117,10 @@ Move old versions to an `archive/` subfolder:
 
 ```
 manual/
-├── DECODE_Competition_Manual_TU3.pdf  (current)
+├── BIOBUZZ_Competition_Manual_TU2.pdf  (current)
 └── archive/
-    ├── DECODE_Competition_Manual_TU1.pdf
-    └── DECODE_Competition_Manual_TU2.pdf
+    ├── BIOBUZZ_Competition_Manual_V0.pdf
+    └── BIOBUZZ_Competition_Manual_TU1.pdf
 ```
 
 **Use when:** You only want the chatbot to answer from the latest version.
@@ -133,9 +133,9 @@ Use consistent naming with dates:
 
 ```
 manual/
-├── DECODE_Competition_Manual_2024-09-01.pdf
-├── DECODE_Competition_Manual_2024-10-15.pdf
-└── DECODE_Competition_Manual_2024-12-01.pdf
+├── BIOBUZZ_Competition_Manual_2026-09-12.pdf
+├── BIOBUZZ_Competition_Manual_2026-10-15.pdf
+└── BIOBUZZ_Competition_Manual_2026-12-01.pdf
 ```
 
 **Benefits:** Easy to identify which version is newest.
@@ -150,8 +150,8 @@ Use clear, consistent filenames that indicate:
 - Date (optional)
 
 Examples:
-- `DECODE_Competition_Manual_TU1.pdf` ✅
-- `DECODE_Competition_Manual_TU2.pdf` ✅
+- `BIOBUZZ_Competition_Manual_V0.pdf` ✅
+- `BIOBUZZ_Competition_Manual_TU1.pdf` ✅
 - `manual.pdf` ❌ (too generic)
 
 ### 2. Version Control
@@ -159,7 +159,7 @@ Examples:
 Keep manual PDFs in git (they're already there):
 
 ```bash
-git add manual/DECODE_Competition_Manual_TU2.pdf
+git add manual/BIOBUZZ_Competition_Manual_TU1.pdf
 git commit -m "Add TU2 manual update"
 ```
 

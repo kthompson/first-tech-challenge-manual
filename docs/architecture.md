@@ -2,7 +2,7 @@
 
 ## Overview
 
-The FTC Decode Manual Chatbot is designed as a modular system that can process PDF content, understand natural language queries, and provide accurate responses about the competition manual.
+The FTC BIOBUZZ Manual Chatbot is designed as a modular system that can process PDF content, understand natural language queries, and provide accurate responses about the competition manual.
 
 ## Project Goals (Proof of Concept)
 
@@ -307,7 +307,7 @@ Cloud Platform (Vercel recommended for cost)
 1. ✅ **Documentation complete**
 2. **Set up project structure** with TypeScript + pnpm
 3. **Implement PDF processing pipeline**
-   - Parse DECODE_Competition_Manual_TU1.pdf
+   - Parse BIOBUZZ_Competition_Manual_V0.pdf
    - Extract text and metadata (pages, sections)
    - Chunk content (1000 tokens, 200 overlap)
 4. **Set up ChromaDB locally**

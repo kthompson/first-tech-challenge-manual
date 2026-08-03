@@ -75,7 +75,7 @@ async function testQuery(
  * Main test function
  */
 async function main() {
-  console.log("🧪 FTC Decode Manual - Retrieval Testing");
+  console.log("🧪 FTC BIOBUZZ Manual - Retrieval Testing");
   console.log("========================================\n");
 
   try {

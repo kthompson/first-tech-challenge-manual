@@ -183,7 +183,7 @@ pnpm install
 
 ```powershell
 # Check if manual exists
-Test-Path "DECODE_Competition_Manual_TU1.pdf"  # Should return True
+Test-Path "BIOBUZZ_Competition_Manual_V0.pdf"  # Should return True
 ```
 
 ### 3. Create Required Directories
@@ -200,7 +200,7 @@ New-Item -Path "src" -ItemType Directory -Force
 
 Create `scripts/process-manual.ts` to:
 
-1. Load DECODE_Competition_Manual_TU1.pdf
+1. Load BIOBUZZ_Competition_Manual_V0.pdf
 2. Extract text with page numbers
 3. Chunk the content (~1000 tokens with 200 overlap)
 4. Generate embeddings via OpenAI
@@ -256,7 +256,7 @@ New-Item -Path "scripts" -ItemType Directory
 
 ```powershell
 # Check if manual exists
-Test-Path "DECODE_Competition_Manual_TU1.pdf"
+Test-Path "BIOBUZZ_Competition_Manual_V0.pdf"
 ```
 
 ## Development Server
@@ -276,7 +276,7 @@ pnpm dev
 ```powershell
 # Restore packages and run
 dotnet restore
-dotnet run --project FtcDecodeBot.Api
+dotnet run --project FtcBiobuzzBot.Api
 ```
 
 ## Verification Steps
@@ -302,7 +302,7 @@ dotnet run --project Scripts -- process-manual
 ```powershell
 # Test chat functionality
 $body = @{
-    message = "What is the FTC Decode challenge about?"
+    message = "What is the FTC BIOBUZZ challenge about?"
 } | ConvertTo-Json
 
 Invoke-RestMethod -Uri "http://localhost:3000/api/chat" -Method POST -Body $body -ContentType "application/json"
@@ -314,7 +314,7 @@ Invoke-RestMethod -Uri "http://localhost:3000/api/chat" -Method POST -Body $body
 
 1. **PDF Processing Fails**
 
-   - Verify PDF file exists: `Test-Path DECODE_Competition_Manual_TU1.pdf`
+   - Verify PDF file exists: `Test-Path BIOBUZZ_Competition_Manual_V0.pdf`
    - Check file permissions
    - Ensure pdf-parse is installed: `pnpm add pdf-parse`
 

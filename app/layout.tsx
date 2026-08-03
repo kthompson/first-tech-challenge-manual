@@ -13,9 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "FTC DECODE Assistant | Competition Manual Expert",
+  title: "FTC BIOBUZZ Assistant | Competition Manual Expert",
   description:
-    "AI-powered chatbot for answering questions about the FIRST Tech Challenge DECODE Competition Manual",
+    "AI-powered chatbot for answering questions about the FIRST Tech Challenge BIOBUZZ Competition Manual",
 };
 
 export default function RootLayout({

@@ -4,7 +4,7 @@
 
 # Development Guide
 
-This guide covers development practices, code organization, and contribution guidelines for the FTC Decode Manual Chatbot.
+This guide covers development practices, code organization, and contribution guidelines for the FTC BIOBUZZ Manual Chatbot.
 
 ## Development Workflow
 
@@ -39,7 +39,7 @@ pnpm type-check   # TypeScript checking
 **C#**:
 
 ```powershell
-dotnet run --project FtcDecodeBot.Api    # Start development server
+dotnet run --project FtcBiobuzzBot.Api    # Start development server
 dotnet build                             # Build solution
 dotnet test                              # Run tests
 dotnet watch run                         # Auto-reload development
@@ -83,7 +83,7 @@ src/
 ### C# Structure
 
 ```
-FtcDecodeBot.Api/
+FtcBiobuzzBot.Api/
 ├── Controllers/
 │   ├── ChatController.cs
 │   ├── ManualController.cs
@@ -92,7 +92,7 @@ FtcDecodeBot.Api/
 ├── Models/
 └── Program.cs
 
-FtcDecodeBot.Core/
+FtcBiobuzzBot.Core/
 ├── Services/
 │   ├── IAiService.cs
 │   ├── IVectorStore.cs
@@ -103,7 +103,7 @@ FtcDecodeBot.Core/
 │   └── ApiModels.cs
 └── Configuration/
 
-FtcDecodeBot.Data/
+FtcBiobuzzBot.Data/
 ├── Repositories/
 ├── Entities/
 └── Migrations/
@@ -280,7 +280,7 @@ describe("Chat API", () => {
   it("should return response for valid message", async () => {
     const response = await request(app)
       .post("/api/chat")
-      .send({ message: "What is FTC Decode?" })
+      .send({ message: "What is FTC BIOBUZZ?" })
       .expect(200);
 
     expect(response.body.response).toBeDefined();

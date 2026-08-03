@@ -4,7 +4,7 @@
  * RAG (Retrieval Augmented Generation) Service
  *
  * Combines semantic search with LLM generation to answer questions
- * based on the FTC Decode manual
+ * based on the FTC BIOBUZZ manual
  */
 
 import { getEmbedder, generateEmbedding } from "./embeddings";
@@ -48,7 +48,7 @@ interface RAGResponse {
  * Build system prompt for the LLM with tool support
  */
 function buildSystemPrompt(withTools: boolean = false): string {
-  const basePrompt = `You are an expert assistant for the FIRST Tech Challenge (FTC) Decode Competition. Your role is to help teams understand the game manual by answering questions accurately and concisely.
+  const basePrompt = `You are an expert assistant for the FIRST Tech Challenge (FTC) BIOBUZZ Competition. Your role is to help teams understand the game manual by answering questions accurately and concisely.
 
 Guidelines:
 - Answer based ONLY on the provided context from the official manual
@@ -57,6 +57,7 @@ Guidelines:
 - Use clear, concise language that teams can understand quickly
 - For technical details, be specific (measurements, point values, time limits, etc.)
 - If multiple manual versions are referenced, note any differences
+- The current manual is a **Pre-Season V0 draft**: Game Overview, ARENA/FIELD, Game Details, Game Rules (G), Tournament (T), and FIRST Championship (C) sections are placeholders pending the Kickoff Competition Manual release on September 12, 2026. If asked about game-specific scoring, field elements, or match structure and the context only shows a placeholder notice, say clearly that this content isn't published yet rather than guessing.
 
 Formatting:
 - **ALWAYS use Markdown formatting** for better readability
@@ -118,7 +119,7 @@ function buildUserPrompt(question: string, contexts: RetrievedChunk[]): string {
     })
     .join("\n\n---\n\n");
 
-  return `Context from the FTC Decode Manual:
+  return `Context from the FTC BIOBUZZ Manual:
 
 ${contextText}
 
@@ -255,7 +256,7 @@ async function searchManualForContext(
 const searchManualTool: ClaudeTool = {
   name: "search_manual",
   description:
-    "Search the FTC DECODE Competition Manual for specific information. Use this when you encounter references to sections, rules, or topics that are not in your current context. Provide a clear, specific query describing what information you need (e.g., 'section 10.5.2', 'rule R205', 'autonomous scoring requirements').",
+    "Search the FTC BIOBUZZ Competition Manual for specific information. Use this when you encounter references to sections, rules, or topics that are not in your current context. Provide a clear, specific query describing what information you need (e.g., 'section 10.5.2', 'rule R205', 'autonomous scoring requirements').",
   input_schema: {
     type: "object",
     properties: {
@@ -304,7 +305,7 @@ export async function answerQuestion(
     // Return a helpful message instead of throwing an error
     return {
       answer:
-        "I apologize, but I couldn't find any relevant information about that topic in the FTC DECODE Competition Manual. This could mean:\n\n- The topic might not be covered in the manual\n- It might be phrased differently in the official documentation\n- It could be in a section I don't have access to\n\n**Suggestions:**\n- Try rephrasing your question with different keywords\n- Check if you're asking about a specific rule number (e.g., \"What is rule R103?\")\n- Browse the official FIRST Tech Challenge manual directly for topics outside competition rules\n\nIf you believe this information should be in the manual, please try asking your question in a different way!",
+        "I apologize, but I couldn't find any relevant information about that topic in the FTC BIOBUZZ Competition Manual. This could mean:\n\n- The topic might not be covered in the manual\n- It might be phrased differently in the official documentation\n- It could be in a section I don't have access to\n\n**Suggestions:**\n- Try rephrasing your question with different keywords\n- Check if you're asking about a specific rule number (e.g., \"What is rule R103?\")\n- Browse the official FIRST Tech Challenge manual directly for topics outside competition rules\n\nIf you believe this information should be in the manual, please try asking your question in a different way!",
       sources: [],
       contextsUsed: 0,
       tokensEstimate: 0,
@@ -340,7 +341,7 @@ export async function answerQuestion(
     // Return a helpful message instead of throwing an error
     return {
       answer:
-        "I apologize, but I couldn't find any relevant information about that topic in the FTC DECODE Competition Manual. This could mean:\n\n- The topic might not be covered in the manual\n- It might be phrased differently in the official documentation\n- It could be in a section I don't have access to\n\n**Suggestions:**\n- Try rephrasing your question with different keywords\n- Check if you're asking about a specific rule number (e.g., \"What is rule R103?\")\n- Browse the official FIRST Tech Challenge manual directly for topics outside competition rules\n\nIf you believe this information should be in the manual, please try asking your question in a different way!",
+        "I apologize, but I couldn't find any relevant information about that topic in the FTC BIOBUZZ Competition Manual. This could mean:\n\n- The topic might not be covered in the manual\n- It might be phrased differently in the official documentation\n- It could be in a section I don't have access to\n\n**Suggestions:**\n- Try rephrasing your question with different keywords\n- Check if you're asking about a specific rule number (e.g., \"What is rule R103?\")\n- Browse the official FIRST Tech Challenge manual directly for topics outside competition rules\n\nIf you believe this information should be in the manual, please try asking your question in a different way!",
       sources: [],
       contextsUsed: 0,
       tokensEstimate: 0,
@@ -459,7 +460,7 @@ export async function answerQuestionStreaming(
 
     // Return a helpful message as a stream
     const errorMessage =
-      "I apologize, but I couldn't find any relevant information about that topic in the FTC DECODE Competition Manual. This could mean:\n\n- The topic might not be covered in the manual\n- It might be phrased differently in the official documentation\n- It could be in a section I don't have access to\n\n**Suggestions:**\n- Try rephrasing your question with different keywords\n- Check if you're asking about a specific rule number (e.g., \"What is rule R103?\")\n- Browse the official FIRST Tech Challenge manual directly for topics outside competition rules\n\nIf you believe this information should be in the manual, please try asking your question in a different way!";
+      "I apologize, but I couldn't find any relevant information about that topic in the FTC BIOBUZZ Competition Manual. This could mean:\n\n- The topic might not be covered in the manual\n- It might be phrased differently in the official documentation\n- It could be in a section I don't have access to\n\n**Suggestions:**\n- Try rephrasing your question with different keywords\n- Check if you're asking about a specific rule number (e.g., \"What is rule R103?\")\n- Browse the official FIRST Tech Challenge manual directly for topics outside competition rules\n\nIf you believe this information should be in the manual, please try asking your question in a different way!";
 
     async function* errorStream() {
       // Yield the error message as a single chunk
@@ -505,7 +506,7 @@ export async function answerQuestionStreaming(
 
     // Return a helpful message as a stream
     const errorMessage =
-      "I apologize, but I couldn't find any relevant information about that topic in the FTC DECODE Competition Manual. This could mean:\n\n- The topic might not be covered in the manual\n- It might be phrased differently in the official documentation\n- It could be in a section I don't have access to\n\n**Suggestions:**\n- Try rephrasing your question with different keywords\n- Check if you're asking about a specific rule number (e.g., \"What is rule R103?\")\n- Browse the official FIRST Tech Challenge manual directly for topics outside competition rules\n\nIf you believe this information should be in the manual, please try asking your question in a different way!";
+      "I apologize, but I couldn't find any relevant information about that topic in the FTC BIOBUZZ Competition Manual. This could mean:\n\n- The topic might not be covered in the manual\n- It might be phrased differently in the official documentation\n- It could be in a section I don't have access to\n\n**Suggestions:**\n- Try rephrasing your question with different keywords\n- Check if you're asking about a specific rule number (e.g., \"What is rule R103?\")\n- Browse the official FIRST Tech Challenge manual directly for topics outside competition rules\n\nIf you believe this information should be in the manual, please try asking your question in a different way!";
 
     async function* errorStream() {
       // Yield the error message as a single chunk

@@ -39,7 +39,7 @@ export function ThreadList({
       <div className="p-4 border-b border-gray-200 dark:border-gray-800">
         <button
           onClick={onNewThread}
-          className="w-full px-4 py-2 bg-linear-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all shadow-md hover:shadow-lg font-medium"
+          className="w-full px-4 py-2 bg-linear-to-r from-emerald-600 to-amber-600 text-white rounded-lg hover:from-emerald-700 hover:to-amber-700 transition-all shadow-md hover:shadow-lg font-medium"
         >
           + New Chat
         </button>
@@ -58,7 +58,7 @@ export function ThreadList({
                 key={thread.id}
                 className={`group relative p-3 rounded-lg cursor-pointer transition-all ${
                   thread.id === currentThreadId
-                    ? "bg-blue-100 dark:bg-blue-900/30 border border-blue-300 dark:border-blue-700"
+                    ? "bg-emerald-100 dark:bg-emerald-900/30 border border-emerald-300 dark:border-emerald-700"
                     : "hover:bg-gray-100 dark:hover:bg-gray-800/50 border border-transparent"
                 }`}
                 onClick={() => onSelectThread(thread.id)}
