@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 
 export interface BiobuzzMessage {
   role: "user" | "assistant";
@@ -104,6 +104,11 @@ export function useThreadManager() {
     loadCurrentThreadId
   );
 
+  // Mirrors currentThreadId but updates synchronously, so callers that
+  // create a thread and immediately write messages in the same tick (before
+  // React commits the state update) still target the right thread.
+  const currentThreadIdRef = useRef(currentThreadId);
+
   // Save threads whenever they change (after initial render)
   useEffect(() => {
     saveThreads(threads);
@@ -129,6 +134,7 @@ export function useThreadManager() {
 
     setThreads((prev) => [newThread, ...prev]);
     setCurrentThreadId(newThread.id);
+    currentThreadIdRef.current = newThread.id;
 
     return newThread;
   }, []);
@@ -136,6 +142,7 @@ export function useThreadManager() {
   // Switch to a different thread
   const switchThread = useCallback((threadId: string) => {
     setCurrentThreadId(threadId);
+    currentThreadIdRef.current = threadId;
   }, []);
 
   // Delete a thread
@@ -145,18 +152,16 @@ export function useThreadManager() {
         const filtered = prev.filter((t) => t.id !== threadId);
 
         // If we deleted the current thread, switch to another or create new
-        if (threadId === currentThreadId) {
-          if (filtered.length > 0) {
-            setCurrentThreadId(filtered[0].id);
-          } else {
-            setCurrentThreadId(null);
-          }
+        if (threadId === currentThreadIdRef.current) {
+          const newId = filtered.length > 0 ? filtered[0].id : null;
+          setCurrentThreadId(newId);
+          currentThreadIdRef.current = newId;
         }
 
         return filtered;
       });
     },
-    [currentThreadId]
+    []
   );
 
   // Update messages in current thread
@@ -166,11 +171,12 @@ export function useThreadManager() {
         | BiobuzzMessage[]
         | ((prev: BiobuzzMessage[]) => BiobuzzMessage[])
     ) => {
-      if (!currentThreadId) return;
+      const threadId = currentThreadIdRef.current;
+      if (!threadId) return;
 
       setThreads((prev) =>
         prev.map((thread) => {
-          if (thread.id !== currentThreadId) return thread;
+          if (thread.id !== threadId) return thread;
 
           const newMessages =
             typeof messagesOrUpdater === "function"
@@ -190,7 +196,7 @@ export function useThreadManager() {
         })
       );
     },
-    [currentThreadId]
+    []
   );
 
   // Get current thread

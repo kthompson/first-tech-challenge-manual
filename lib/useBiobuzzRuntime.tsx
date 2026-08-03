@@ -42,11 +42,6 @@ export function useBiobuzzRuntime() {
   const [isRunning, setIsRunning] = useState(false);
 
   const sendMessage = async (userText: string) => {
-    // Ensure we have a thread
-    if (!currentThreadId) {
-      createThread(userText);
-    }
-
     setIsRunning(true);
 
     // Create an assistant message that will be updated as we stream
@@ -165,6 +160,12 @@ export function useBiobuzzRuntime() {
     }
 
     const userText = message.content[0].text;
+
+    // Ensure a thread exists before recording any messages, so the first
+    // message of a new conversation isn't dropped
+    if (!currentThreadId) {
+      createThread(userText);
+    }
 
     // Add user message
     const userMessage: BiobuzzMessage = {
